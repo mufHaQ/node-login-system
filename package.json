@@ -1,0 +1,22 @@
+{
+  "name": "node-login-system",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "author": {
+    "name": "Dliyaulhaq Mufliansyah",
+    "url": "https://mufhaq.com"
+  },
+  "scripts": {
+    "start": "nodemon ."
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "email-validator": "^2.0.4",
+    "express": "^4.17.1",
+    "mariadb": "^2.5.4",
+    "nanoid": "^3.1.25",
+    "sequelize": "^6.6.5"
+  }
+}
