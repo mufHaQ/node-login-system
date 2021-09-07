@@ -43,22 +43,27 @@ router.get('/', (req, res) => {
 
 router.route('/signup')
   .get((req, res) => {
-    res.json(Template(req, 'Signup'))
+    res.json(Template(req, 'User POST method for signup'))
   })
   .post((req, res) => {
     const username = req.body['username']
     const email = req.body['email']
-    const password = bcrypt.hashSync(req.body['password'], 10)
+    const plainPassword = req.body['password']
 
     if (Object.values(req.body) < 1) {
       res.json(Template(req, "Need json", true))
     } else {
       if (emailValidator.validate(email)) {
-        try {
-          CreateUser(username, email, password)
-          res.json(Template(req, `Create user ${username}`, false))
-        } catch (err) {
-          res.json(Template(req, err.message, true))
+        if (((email && plainPassword) || (username && plainPassword) || (email && username && plainPassword))) {
+          const password = bcrypt.hashSync(plainPassword, 10)
+          try {
+            CreateUser(username, email, password)
+            res.json(Template(req, `Create user ${username}`, false))
+          } catch (err) {
+            res.json(Template(req, err.message, true))
+          }
+        } else {
+          res.json(Template(req, "Need email/username and password", true))
         }
       } else {
         res.json(Template(req, "Email must be like: example@example.com", true))
@@ -124,6 +129,9 @@ router.route('/signin')
     } else {
       res.json(Template(req, "Need email/username and password", true))
     }
+  })
+  .get((req, res) => {
+    res.json(Template(req, 'User POST method for signin'))
   })
 
 
