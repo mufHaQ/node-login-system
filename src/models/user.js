@@ -1,22 +1,17 @@
-const {
-  Sequelize,
-  DataTypes
-} = require('sequelize')
-
+const { Sequelize, DataTypes } = require("sequelize");
 
 const sequelize = new Sequelize({
-  host: 'localhost',
+  host: "localhost",
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB,
-  dialect: process.env.DB_DIALECT
-})
+  dialect: process.env.DB_DIALECT,
+});
 
-
-const User = sequelize.define('users', {
+const User = sequelize.define("users", {
   nanoid: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   username: {
     type: DataTypes.STRING,
@@ -27,18 +22,17 @@ const User = sequelize.define('users', {
     allowNull: false,
     validate: {
       isEmail: {
-        msg: 'Must be email'
-      }
-    }
+        msg: "Must be email",
+      },
+    },
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false
-  }
-})
-
+    allowNull: false,
+  },
+});
 
 module.exports = {
   sequelize,
-  User
-}
+  user: User,
+};
