@@ -1,5 +1,5 @@
 // Response JSON Template
-module.exports = function (req, message, error = false, data) {
+module.exports = function (req, message, error, data) {
   const date = new Date().toLocaleString("id-id").split("/").join("-");
   if (data) {
     return {
