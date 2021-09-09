@@ -29,12 +29,7 @@ async function createUser(req) {
   if (emailValidator.validate(email)) {
     await bcrypt.hash(plainPassword, 10, async (err, hash) => {
       if (err) throw new Error(err);
-      await user.create({
-        nanoid: nanoid(10),
-        username: username,
-        email: email,
-        password: hash,
-      });
+      await user.create({ nanoid: nanoid(10), username: username, email: email, password: hash });
     });
     return {
       error: false,
@@ -51,17 +46,9 @@ async function createUser(req) {
 async function check(instance, data) {
   let result = false;
   if (emailValidator.validate(data)) {
-    result = await instance.findOne({
-      where: {
-        email: data,
-      },
-    });
+    result = await instance.findOne({ where: { email: data } });
   } else {
-    result = await instance.findOne({
-      where: {
-        username: data,
-      },
-    });
+    result = await instance.findOne({ where: { username: data } });
   }
 
   return result ?? false;
@@ -83,4 +70,5 @@ module.exports = {
   drop,
   createUser,
   checkUsername,
+  check,
 };
