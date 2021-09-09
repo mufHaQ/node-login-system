@@ -8,7 +8,13 @@ const sequelize = new Sequelize({
   dialect: process.env.DB_DIALECT,
 });
 
-const User = sequelize.define("users", {
+let users = "users";
+
+if (process.env.NODE_ENV == "development") {
+  users = "_test_users";
+}
+
+const User = sequelize.define(users, {
   nanoid: {
     type: DataTypes.STRING,
     allowNull: false,

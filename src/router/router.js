@@ -1,17 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const { createUser, checkUser } = require("../db/db");
+const { createUser, checkUser, sync, drop } = require("../db/db");
 const { user } = require("../models/user");
 const resTemplate = require("./resTemplate");
 
 router.get("/sync", async (req, res) => {
-  await user.sync();
-  res.json(resTemplate(req, "sync table 'users'"));
+  const table_name = await sync(user);
+  res.json(
+    resTemplate(req, "sync table", false, {
+      table: await table_name,
+    })
+  );
 });
 
 router.get("/drop", async (req, res) => {
-  await user.drop();
-  res.json(resTemplate(req, "drop table 'users'"));
+  const table_name = await drop(user);
+  res.json(
+    resTemplate(req, "drop table", false, {
+      table: await table_name,
+    })
+  );
 });
 
 router.post("/signup", async (req, res) => {

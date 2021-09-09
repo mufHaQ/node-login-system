@@ -2,7 +2,16 @@ const { sequelize, user } = require("../models/user");
 const { nanoid } = require("nanoid");
 const bcrypt = require("bcrypt");
 const emailValidator = require("email-validator");
-const e = require("express");
+
+async function sync(instance) {
+  await instance.sync();
+  return instance.tableName;
+}
+
+async function drop(instance) {
+  await instance.drop();
+  return instance.tableName;
+}
 
 async function createUser(req) {
   const plainPassword = req.body["password"];
@@ -75,6 +84,8 @@ async function checkUser(req) {
 
 module.exports = {
   sequelize,
+  sync,
+  drop,
   createUser,
   checkUser,
 };
