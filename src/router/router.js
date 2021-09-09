@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { createUser, checkUser, sync, drop } = require("../db/db");
+const { createUser, checkUsername, sync, drop } = require("../db/db");
 const { user } = require("../models/user");
 const resTemplate = require("./resTemplate");
 
@@ -23,23 +23,17 @@ router.get("/drop", async (req, res) => {
 });
 
 router.post("/signup", async (req, res) => {
-  const result = await createUser(req);
-  if (result) {
-    res.json(resTemplate(req, `create user ${req.body["username"]}`));
+  const { error, message } = await createUser(req);
+  if (!error) {
+    res.json(resTemplate(req, message));
   } else {
-    res.json(resTemplate(req, "need valid email, username and password", true));
+    res.json(resTemplate(req, message, error));
   }
 });
 
 router.post("/signin", async (req, res) => {
-  const result = await checkUser(req);
-  if (result) {
-    res.json(resTemplate(req, "welcome!"));
-  } else {
-    res.json(resTemplate(req, "wrong email/username or password", true));
-  }
+  console.log(await checkUsername(req));
+  res.json(resTemplate(req, "signin"));
 });
-
-router.route("/signup").post(async (req, res) => {});
 
 module.exports = router;

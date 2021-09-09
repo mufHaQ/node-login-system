@@ -1,15 +1,17 @@
-require('dotenv').config()
-const express = require('express')
-const app = express()
-const router = require('./src/router/router')
+require("dotenv").config();
+const express = require("express");
+const app = express();
+const router = require("./src/router/router");
 
-const port = process.env.PORT
+const port = process.env.PORT;
 
-app.use(express.json())
-app.use(express.urlencoded({
-  extended: true
-}))
+app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 app.listen(port, () => {
-  console.log(`Listening @ http://localhost:${port}`)
-})
-app.use(router)
+  console.log(`Listening @ http://localhost:${port}`);
+});
+app.use(router);

@@ -17,6 +17,14 @@ async function createUser(req) {
   const plainPassword = req.body["password"];
   const email = req.body["email"];
   const username = req.body["username"];
+  const check = (await checkUsername(req)) || (await checkEmail(req));
+
+  if (check) {
+    return {
+      error: true,
+      message: "username or email already exists",
+    };
+  }
 
   if (emailValidator.validate(email)) {
     await bcrypt.hash(plainPassword, 10, async (err, hash) => {
@@ -28,58 +36,45 @@ async function createUser(req) {
         password: hash,
       });
     });
-    return true;
+    return {
+      error: false,
+      message: `create new user '${username}'`,
+    };
   } else {
-    return false;
+    return {
+      error: true,
+      message: "need valid email, username and password",
+    };
   }
 }
 
-async function checkUser(req) {
-  let email = req.body["email"];
-  let username = req.body["username"];
-  const plainPassword = req.body["password"];
+async function check(instance, data) {
   let result = false;
-
-  async function search(temp, searchData) {
-    if (username && temp == searchData["username"]) {
-      temp = true;
-    } else if (email && temp == searchData["email"]) {
-      temp = true;
-    } else {
-      temp = false;
-    }
-
-    if (temp) {
-      await bcrypt
-        .compare(plainPassword, searchData["password"])
-        .then((bcryptResult) => {
-          result = bcryptResult;
-        })
-        .catch((bcryptResult) => {
-          result = bcryptResult;
-        });
-    }
-  }
-
-  if (username) {
-    const temp = username;
-    username = await user.findOne({
+  if (emailValidator.validate(data)) {
+    result = await instance.findOne({
       where: {
-        username: username,
+        email: data,
       },
     });
-    await search(temp, username);
-  } else if (email) {
-    const temp = email;
-    email = await user.findOne({
+  } else {
+    result = await instance.findOne({
       where: {
-        email: email,
+        username: data,
       },
     });
-    await search(temp, email);
   }
 
-  return result;
+  return result ?? false;
+}
+
+async function checkUsername(req) {
+  const username = req.body["username"];
+  return await check(user, username);
+}
+
+async function checkEmail(req) {
+  const email = req.body["email"];
+  return await check(user, email);
 }
 
 module.exports = {
@@ -87,5 +82,5 @@ module.exports = {
   sync,
   drop,
   createUser,
-  checkUser,
+  checkUsername,
 };
